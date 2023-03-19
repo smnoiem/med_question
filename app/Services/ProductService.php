@@ -11,7 +11,7 @@ class ProductService
 {
     public $fileDirectory = 'product_photos';
 
-    public function storeMediaFile($file)
+    public function storeMediaFile($file): string
     {
         return Storage::putFile($this->fileDirectory, $file);
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
+use App\Models\ProductVariantPrice;
 use App\Models\Variant;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
@@ -24,7 +25,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index');
+        $productVariantPrices = ProductVariantPrice::paginate(10);
+        // dd($productVariantPrices->first()->productVariantOne);
+        return view('products.index', compact('productVariantPrices'));
     }
 
     /**
@@ -119,7 +122,7 @@ class ProductController extends Controller
     public function storeMedia(Request $request)
     {
         $file = $request->file('file');
-        
+
         $path = $this->productService->storeMediaFile($file);
 
         return $path;

@@ -14,4 +14,14 @@ class ProductVariant extends Model
     protected $fillable = [
         'variant', 'variant_id', 'product_id',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(Variant::class);
+    }
 }
