@@ -98,6 +98,7 @@
 
     <script type="text/javascript">
         let variants = {!! $variants !!};
+        var fileUploadUrl = "{{ route('file-upload') }}";
     </script>
     <script type="text/javascript" src="{{ asset('js/product.js') }}"></script>
 @endpush

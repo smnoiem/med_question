@@ -4,12 +4,18 @@ var indexs = [];
 
 $(document).ready(function () {
     addVariantTemplate();
+
+    var uploadedDocumentMap = {};
     $("#file-upload").dropzone({
-        url: "{{ route('file-upload') }}",
+        url: fileUploadUrl,
         method: "post",
         addRemoveLinks: true,
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         success: function (file, response) {
-            //
+            $('form').append('<input type="hidden" name="product_medias[]" value="' + response + '">');
+            uploadedDocumentMap[file.name] = response;
         },
         error: function (file, response) {
             //
@@ -38,15 +44,9 @@ function getCombination(arr, pre) {
 function updateVariantPreview() {
 
     var valueArray = [];
-    var optionArray = [];
 
     $(".select2-value").each(function () {
         valueArray.push($(this).val());
-
-        optionArray.push({
-            'variant_option' : $(".select2-option").val(),
-            'value' : $(this).val(),
-        });
     });
 
     var variantPreviewArray = getCombination(valueArray);
