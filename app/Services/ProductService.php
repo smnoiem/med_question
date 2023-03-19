@@ -5,6 +5,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantPrice;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class ProductService
@@ -72,5 +73,34 @@ class ProductService
                 if($count > 2) break;
             }
         }
+    }
+
+    public function applyFilters($queries)
+    {
+        $productVariantPrices = ProductVariantPrice::with('product');
+
+        if(isset($queries['title'])) {
+            $keywords = array_filter(explode(' ', $queries['title']));
+            foreach($keywords as $keyword)
+            {
+                $productVariantPrices = $productVariantPrices->whereHas('product', function ($query) use ($keyword) {
+                    $query->where('title', 'LIKE', '%' . $keyword . '%');
+                });
+            }
+        }
+
+        if(isset($queries['price_from'])) {
+            $productVariantPrices = $productVariantPrices->where('price', '>=', $queries['price_from']);
+        }
+
+        if(isset($queries['price_to']) ) {
+            $productVariantPrices = $productVariantPrices->where('price', '<=', $queries['price_to']);
+        }
+
+        if(isset($queries['date']) ) {
+            $productVariantPrices = $productVariantPrices->whereDate('created_at', new Carbon($queries['date']));
+        }
+
+        return $productVariantPrices;
     }
 }

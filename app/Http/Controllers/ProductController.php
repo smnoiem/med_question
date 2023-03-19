@@ -23,9 +23,11 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $productVariantPrices = ProductVariantPrice::paginate(10);
+        $productVariantPrices = $this->productService->applyFilters($request->query());
+
+        $productVariantPrices = $productVariantPrices->paginate(10);
         
         return view('products.index', compact('productVariantPrices'));
     }
