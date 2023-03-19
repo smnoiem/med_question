@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
-use App\Models\ProductVariantPrice;
 use App\Models\Variant;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -48,57 +54,17 @@ class ProductController extends Controller
 
         $mediaPaths = $request->input('product_medias', []);
 
-        foreach($mediaPaths as $mediaPath)
-        {
-            $productImage = new ProductImage;
-            $productImage->product_id = $product->id;
-            $productImage->file_path = $mediaPath;
-            $productImage->save();
-        }
-
-        $productVariantsMap = [];
+        $this->productService->storeMediaPaths($mediaPaths, $product);
 
         $productVariantInputs = $request->input('product_variant', []);
 
-        foreach($productVariantInputs as $productVariantInput)
-        {
-            foreach($productVariantInput['value'] as $value)
-            {
-                $productVariant = ProductVariant::create([
-                    'variant' => $value,
-                    'product_id' => $product->id,
-                    'variant_id' => $productVariantInput['option'],
-                ]);
+        $productVariantsMap = [];
+        
+        $productVariantsMap = $this->productService->addVariants($productVariantInputs, $product);
 
-                $productVariantsMap[$value] = $productVariant->id;
-            }
-        }
+        $productVariantPriceAllData = $request->input('product_preview');
 
-        $productPreviews = $request->input('product_preview');
-
-        foreach($productPreviews as $productPreview)
-        {
-            $combinations = array_filter(explode('/', $productPreview['variant']));
-
-            $productVariantPrice = ProductVariantPrice::create([
-                'product_id' => $product->id,
-                'price' => $productPreview['price'],
-                'stock' => $productPreview['stock'],
-            ]);
-
-            $count = 0;
-
-            foreach($combinations as $combination)
-            {
-                if($count == 0) $productVariantPrice->product_variant_one = $productVariantsMap[$combination];
-                if($count == 1) $productVariantPrice->product_variant_two = $productVariantsMap[$combination];
-                if($count == 2) $productVariantPrice->product_variant_three = $productVariantsMap[$combination];
-                $productVariantPrice->update();
-
-                $count++;
-                if($count > 2) break;
-            }
-        }
+        $this->productService->addVariantPrices($productVariantPriceAllData, $product, $productVariantsMap);
 
         return response()->redirectTo(route('product.index'));
     }
@@ -152,7 +118,9 @@ class ProductController extends Controller
 
     public function storeMedia(Request $request)
     {
-        $path = $request->file('file')->store('product_photos');
+        $file = $request->file('file');
+        
+        $path = $this->productService->storeMediaFile($file);
 
         return $path;
     }
