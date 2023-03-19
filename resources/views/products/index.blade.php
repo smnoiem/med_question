@@ -66,7 +66,19 @@
         <div class="card-footer">
             <div class="row justify-content-between">
                 <div class="col-md-6">
-                    <p>Showing 1 to 10 out of 100</p>
+
+                    @if($productVariantPrices->count())
+                    <p>
+                        Showing {{$productVariantPrices->firstItem()}} to {{$productVariantPrices->lastItem()}} out of {{$productVariantPrices->total()}}
+                    </p>
+                    @else
+                    <p>
+                        No product found!
+                    </p>
+                    @endif
+
+                    {{ $productVariantPrices->links() }}
+                    
                 </div>
                 <div class="col-md-2">
 
