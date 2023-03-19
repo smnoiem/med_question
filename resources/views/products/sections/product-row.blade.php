@@ -4,7 +4,7 @@
     <td>{{ $productVariantPrice->product->title }} <br> Created at : {{ $productVariantPrice->product->created_at }}</td>
     <td>{{ $productVariantPrice->product->description }}</td>
     <td>
-        <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
+        <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant-{{ $productVariantPrice->id }}">
 
             <dt class="col-sm-3 pb-0">
                 {{ $productVariantPrice->productVariantOne ? $productVariantPrice->productVariantOne->variant : "" }}
@@ -18,7 +18,7 @@
                 </dl>
             </dd>
         </dl>
-        <button onclick="$('#variant').toggleClass('h-auto')" class="btn btn-sm btn-link">Show more</button>
+        <button onclick="$('#variant-{{ $productVariantPrice->id }}').toggleClass('h-auto')" class="btn btn-sm btn-link">Show more</button>
     </td>
     <td>
         <div class="btn-group btn-group-sm">

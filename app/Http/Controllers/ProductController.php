@@ -29,7 +29,9 @@ class ProductController extends Controller
 
         $productVariantPrices = $productVariantPrices->paginate(10);
         
-        return view('products.index', compact('productVariantPrices'));
+        $variants = $this->productService->removeDuplicateVariants(Variant::get());
+        
+        return view('products.index', compact('productVariantPrices', 'variants'));
     }
 
     /**

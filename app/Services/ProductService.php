@@ -77,7 +77,7 @@ class ProductService
 
     public function applyFilters($queries)
     {
-        $productVariantPrices = ProductVariantPrice::with('product');
+        $productVariantPrices = ProductVariantPrice::with(['product', 'product.productVariants']);
 
         if(isset($queries['title'])) {
             $keywords = array_filter(explode(' ', $queries['title']));
@@ -101,6 +101,37 @@ class ProductService
             $productVariantPrices = $productVariantPrices->whereDate('created_at', new Carbon($queries['date']));
         }
 
+        if(isset($queries['variants']) ) {
+            foreach($queries['variants'] as $variant)
+            {
+                $productVariantPrices = $productVariantPrices->whereHas('product.productVariants', function ($query) use ($variant) {
+                    $query->whereRaw('LOWER(`variant`) LIKE ?', '%' . $variant . '%');
+                });
+            }
+        }
+
+        // dd($productVariantPrices->toSql());
+
         return $productVariantPrices;
+    }
+
+    public function removeDuplicateVariants($variants)
+    {
+        $newVariants = [];
+        foreach($variants as $variant)
+        {
+            if(!array_key_exists($variant->title, $newVariants)){
+                $newVariants[$variant->title] = [];
+            }
+
+            foreach($variant->productVariants as $productVariant){
+                $variantName = trim(strtolower($productVariant->variant));
+                if(!in_array($variantName, $newVariants[$variant->title])) {
+                    $newVariants[$variant->title][] = $variantName;
+                }
+            }
+        }
+
+        return $newVariants;
     }
 }

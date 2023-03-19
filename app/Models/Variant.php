@@ -15,4 +15,14 @@ class Variant extends Model
         return $this->belongsToMany(Product::class);
     }
 
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    public function productVariantsGroup()
+    {
+        return $this->hasMany(ProductVariant::class)->groupBy('variant');
+    }
+
 }

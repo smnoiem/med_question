@@ -14,8 +14,22 @@
                     <input type="text" name="title" placeholder="Product Title" class="form-control" value="{{ app('request')->input('title') }}">
                 </div>
                 <div class="col-md-2">
-                    <select name="variant" id="" class="form-control">
+                    <select name="variants[]" id="" class="form-control" multiple="multiple">
 
+                        @foreach ($variants as $title => $variant)
+                            
+                            <optgroup label="{{ $title }}">
+
+                                @foreach ($variant as $productVariant)
+                                    
+                                    <option value="{{$productVariant}}">{{$productVariant}}</option>
+                                    
+                                @endforeach
+
+                            </optgroup>
+
+                        @endforeach
+                        
                     </select>
                 </div>
 
