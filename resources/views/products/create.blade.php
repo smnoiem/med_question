@@ -5,6 +5,7 @@
         <h1 class="h3 mb-0 text-gray-800">Create Product</h1>
     </div>
     <form action="{{ route('product.store') }}" method="post" autocomplete="off" spellcheck="false">
+        @csrf
         <section>
             <div class="row">
                 <div class="col-md-6">
@@ -87,12 +88,16 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-lg btn-primary">Save</button>
+            <button type="submit" class="btn btn-lg btn-primary">Save</button>
             <button type="button" class="btn btn-secondary btn-lg">Cancel</button>
         </section>
     </form>
 @endsection
 
 @push('page_js')
+
+    <script type="text/javascript">
+        let variants = {!! $variants !!};
+    </script>
     <script type="text/javascript" src="{{ asset('js/product.js') }}"></script>
 @endpush

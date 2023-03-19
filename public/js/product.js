@@ -38,9 +38,15 @@ function getCombination(arr, pre) {
 function updateVariantPreview() {
 
     var valueArray = [];
+    var optionArray = [];
 
     $(".select2-value").each(function () {
         valueArray.push($(this).val());
+
+        optionArray.push({
+            'variant_option' : $(".select2-option").val(),
+            'value' : $(this).val(),
+        });
     });
 
     var variantPreviewArray = getCombination(valueArray);
@@ -68,20 +74,20 @@ function updateVariantPreview() {
 
 function addVariantTemplate() {
 
+    let variantOptons = "";
+
+    variants.forEach(variant => {
+
+        variantOptons += `<option value="${variant.id}" data-title="${variant.title}">${variant.title}</option>`;
+
+    });
+
     $("#variant-sections").append(`<div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Option</label>
                                         <select id="select2-option-${currentIndex}" data-index="${currentIndex}" name="product_variant[${currentIndex}][option]" class="form-control custom-select select2 select2-option">
-                                            <option value="1">
-                                                Color
-                                            </option>
-                                            <option value="2">
-                                                Size
-                                            </option>
-                                            <option value="6">
-                                                Style
-                                            </option>
+                                            ${variantOptons}
                                         </select>
                                     </div>
                                 </div>
