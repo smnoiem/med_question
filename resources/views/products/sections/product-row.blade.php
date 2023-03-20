@@ -1,6 +1,6 @@
 
 <tr>
-    <td>{{ $productVariantPrice->product->id }}</td>
+    <td>{{ $productVariantPrice->id }}</td>
     <td>{{ $productVariantPrice->product->title }} <br> Created at : {{ $productVariantPrice->product->created_at }}</td>
     <td>{{ $productVariantPrice->product->description }}</td>
     <td>

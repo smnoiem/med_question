@@ -91,7 +91,7 @@
                     </p>
                     @endif
 
-                    {{ $productVariantPrices->links() }}
+                    {{ $productVariantPrices->withQueryString()->links() }}
 
                 </div>
                 <div class="col-md-2">
