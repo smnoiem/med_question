@@ -3,6 +3,8 @@ var currentIndex = 0;
 var indexs = [];
 
 $(document).ready(function () {
+    initializeVariants(total);
+
     addVariantTemplate();
 
     var uploadedDocumentMap = {};
@@ -150,3 +152,53 @@ function removeVariant(event, element) {
     updateVariantPreview();
 }
 
+function initializeVariants(total) {
+    for (let cnt = 0; cnt < total; cnt++) {
+        $(`#select2-option-${currentIndex}`).select2({placeholder: "Select Option", theme: "bootstrap4"});
+
+        $(`#select2-value-${currentIndex}`)
+            .select2({
+                tags: true,
+                multiple: true,
+                placeholder: "Type tag name",
+                allowClear: true,
+                theme: "bootstrap4"
+
+            })
+            .on('select2:unselecting', function (e, ui) {
+                
+                var entry = e.params.args.data.text;
+
+				$.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "POST",
+                    data:{
+                        variant: entry,
+                    },
+                    url: variationPriceHasProductUrl,
+                    success: function(resp) {
+                        if(resp.product_exists){
+                            toastr.warning('This variant has products!');
+                            
+                            var newState = new Option(entry, entry, true, true);
+                            
+                            $("#" + e.currentTarget.id + "").append(newState).trigger('change');
+                        }
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            })
+            .on('change', function () {
+                updateVariantPreview();
+            });
+
+        indexs.push(currentIndex);
+
+        currentIndex = (currentIndex + 1);
+        
+    }
+}

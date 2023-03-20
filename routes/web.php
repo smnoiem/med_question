@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('product-variant', 'VariantController');
     Route::resource('product', 'ProductController');
     Route::post('/product/store-media', 'ProductController@storeMedia')->name('file-upload');
+    Route::post('/product/variation-price-hast-product', 'ProductController@variationPriceHastProduct')->name('variation-price-has-products');
     Route::resource('blog', 'BlogController');
     Route::resource('blog-category', 'BlogCategoryController');
 });

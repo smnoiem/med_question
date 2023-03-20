@@ -62,6 +62,18 @@
                                 class="m-0 font-weight-bold text-primary">Variants</h6>
                         </div>
                         <div class="card-body pb-0" id="variant-sections">
+                            @php
+                                $currentIndex = 0;
+                            @endphp
+                            @foreach ($variants as $variant)
+
+                                    @include('products.sections.product-variants', [
+                                        // 'productVariants' => $productVariants,
+                                        'currentIndex' => $currentIndex++,
+                                        'variant' => $variant,
+                                    ])
+
+                            @endforeach
                         </div>
                         <div class="card-footer bg-white border-top-0" id="add-btn">
                             <div class="row d-flex justify-content-center">
@@ -101,6 +113,8 @@
     <script type="text/javascript">
         let variants = {!! $variants !!};
         var fileUploadUrl = "{{ route('file-upload') }}";
+        var variationPriceHasProductUrl = '{{route("variation-price-has-products")}}';
+        let total = {{$currentIndex}};
     </script>
     <script type="text/javascript" src="{{ asset('js/product.js') }}"></script>
 @endpush

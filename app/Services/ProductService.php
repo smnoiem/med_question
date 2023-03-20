@@ -69,23 +69,28 @@ class ProductService
         {
             foreach($productVariantInput['value'] ?? [] as $value)
             {
-                $productVariant = ProductVariant::updateOrCreate([
-                    'variant' => $value,
-                    'product_id' => $product->id,
-                    'variant_id' => $productVariantInput['option'],
-                ]);
+                $productVariant = ProductVariant::updateOrCreate(
+                    [
+                        'variant' => trim(strtolower($value)),
+                        'product_id' => $product->id,
+                        'variant_id' => $productVariantInput['option'],
+                    ]
+                );
 
                 $productVariantsMap[$value] = $productVariant->id;
             }
         }
 
-        // $this->removeUnusedVariants($productVariantsMap, $product);
+        $this->removeUnusedVariants($productVariantsMap, $product);
 
         return $productVariantsMap;
     }
 
     public function removeUnusedVariants($productVariantsMap, Product $product): void
     {
+        // foreach($product->productVariants as $productVariant){
+        // }
+
         return;
     }
 
@@ -174,5 +179,28 @@ class ProductService
         }
 
         return $newVariants;
+    }
+
+    public function variationPriceHastProduct($variantName)
+    {
+        $variantName = trim(strtolower($variantName));
+
+        $productVariants = ProductVariant::where('variant', $variantName)->get();
+
+        foreach($productVariants as $productVariant)
+        {
+            if(
+                ProductVariantPrice::where('product_variant_one', $productVariant->id)
+                    ->orWhere('product_variant_two', $productVariant->id)
+                    ->orWhere('product_variant_three', $productVariant->id)
+                    ->exists()
+            )
+            {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 }

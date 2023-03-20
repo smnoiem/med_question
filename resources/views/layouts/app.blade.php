@@ -15,6 +15,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 </head>
 {{--<body id="page-top">--}}
 
@@ -157,6 +158,7 @@
 <!-- Scripts -->
 <script src="{{ asset('/js/jquery.min.js') }}"></script>
 <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="{{ asset('js/app.js') }}" defer></script>
 <script>Dropzone.autoDiscover = false;</script>
 @stack('page_js')
