@@ -22,7 +22,7 @@
 
                                 @foreach ($variant as $productVariant)
                                     
-                                    <option value="{{$productVariant}}">{{$productVariant}}</option>
+                                    <option value="{{$productVariant}}" {{ in_array($productVariant, app('request')->input('variants') ?? []) ? "selected":""}}>{{$productVariant}}</option>
                                     
                                 @endforeach
 

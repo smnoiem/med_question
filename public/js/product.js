@@ -137,9 +137,12 @@ function addVariantTemplate() {
                         
                         $("#" + e.currentTarget.id + "").append(newState).trigger('change');
                     }
+
+                    updateVariantPreview()
                 },
                 error: function(err) {
                     console.log(err);
+                    updateVariantPreview()
                 }
             });
         })
@@ -213,9 +216,13 @@ function initializeVariants(total) {
                             
                             $("#" + e.currentTarget.id + "").append(newState).trigger('change');
                         }
+
+                        updateVariantPreview()
                     },
                     error: function(err) {
                         console.log(err);
+
+                        updateVariantPreview()
                     }
                 });
             })
@@ -232,6 +239,8 @@ function initializeVariants(total) {
         } else {
             $("#add-btn").show();
         }
+
+        updateVariantPreview()
         
     }
 }

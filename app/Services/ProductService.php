@@ -166,7 +166,13 @@ class ProductService
         if(isset($queries['variants']) ) {
             foreach($queries['variants'] as $variant)
             {
-                $productVariantPrices = $productVariantPrices->whereHas('product.productVariants', function ($query) use ($variant) {
+                $productVariantPrices = $productVariantPrices->whereHas('productVariantOne', function ($query) use ($variant) {
+                    $query->whereRaw('LOWER(`variant`) LIKE ?', '%' . $variant . '%');
+                })
+                ->orWhereHas('productVariantTwo', function ($query) use ($variant) {
+                    $query->whereRaw('LOWER(`variant`) LIKE ?', '%' . $variant . '%');
+                })
+                ->orWhereHas('productVariantThree', function ($query) use ($variant) {
                     $query->whereRaw('LOWER(`variant`) LIKE ?', '%' . $variant . '%');
                 });
             }
