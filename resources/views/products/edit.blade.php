@@ -111,10 +111,10 @@
 
 @push('page_js')
     <script type="text/javascript">
-        let variants = {!! $variants !!};
+        var variants = {!! $variants !!};
         var fileUploadUrl = "{{ route('file-upload') }}";
         var variationPriceHasProductUrl = '{{route("variation-price-has-products")}}';
-        let total = {{$currentIndex}};
+        var total = {{$currentIndex}};
     </script>
     <script type="text/javascript" src="{{ asset('js/product.js') }}"></script>
 @endpush

@@ -47,9 +47,9 @@ class ProductService
 
         foreach($productVariantInputs as $productVariantInput)
         {
-            foreach($productVariantInput['value'] as $value)
+            foreach($productVariantInput['value'] ?? [] as $value)
             {
-                $productVariant = ProductVariant::create([
+                $productVariant = ProductVariant::updateOrCreate([
                     'variant' => $value,
                     'product_id' => $product->id,
                     'variant_id' => $productVariantInput['option'],
@@ -58,6 +58,9 @@ class ProductService
                 $productVariantsMap[$value] = $productVariant->id;
             }
         }
+
+        $this->removeUnwantedVariants($productVariantsMap, $product);
+
         return $productVariantsMap;
     }
 
@@ -81,17 +84,30 @@ class ProductService
             }
         }
 
-        $this->removeUnusedVariants($productVariantsMap, $product);
+        $this->removeUnwantedVariants($productVariantsMap, $product);
 
         return $productVariantsMap;
     }
 
-    public function removeUnusedVariants($productVariantsMap, Product $product): void
+    public function removeUnwantedVariants($productVariantsMap, Product $product): array
     {
-        // foreach($product->productVariants as $productVariant){
-        // }
 
-        return;
+        foreach($product->productVariants as $productVariant)
+        {
+            if(!in_array($productVariant->id, $productVariantsMap)) {
+                if(
+                    !ProductVariantPrice::where('product_variant_one', $productVariant->id)
+                        ->orWhere('product_variant_two', $productVariant->id)
+                        ->orWhere('product_variant_three', $productVariant->id)
+                        ->exists()
+                )
+                {
+                    $productVariant->delete();
+                }
+            }
+        }
+        
+        return $productVariantsMap;
     }
 
     public function addVariantPrices($variantPriceAllData, Product $product, $productVariantsMap)
@@ -181,7 +197,7 @@ class ProductService
         return $newVariants;
     }
 
-    public function variationPriceHastProduct($variantName)
+    public function variationPriceHasProduct($variantName)
     {
         $variantName = trim(strtolower($variantName));
 

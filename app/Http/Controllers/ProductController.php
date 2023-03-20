@@ -146,11 +146,11 @@ class ProductController extends Controller
         return $path;
     }
 
-    public function variationPriceHastProduct(Request $request)
+    public function variationPriceHasProduct(Request $request)
     {
         $variantName = $request->input('variant');
 
-        $exists = $this->productService->variationPriceHastProduct($variantName);
+        $exists = $this->productService->variationPriceHasProduct($variantName);
 
         if($exists) return response()->json(['product_exists' => true]);
         else return response()->json(['product_exists' => false]);

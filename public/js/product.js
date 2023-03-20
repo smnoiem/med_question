@@ -5,7 +5,7 @@ var indexs = [];
 $(document).ready(function () {
     initializeVariants(total);
 
-    addVariantTemplate();
+    if(currentIndex <3 ) addVariantTemplate();
 
     var uploadedDocumentMap = {};
     $("#file-upload").dropzone({
@@ -116,6 +116,33 @@ function addVariantTemplate() {
             theme: "bootstrap4"
 
         })
+        .on('select2:unselecting', function (e, ui) {
+            
+            var entry = e.params.args.data.text;
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST",
+                data:{
+                    variant: entry,
+                },
+                url: variationPriceHasProductUrl,
+                success: function(resp) {
+                    if(resp.product_exists){
+                        toastr.warning('This variant has products!');
+                        
+                        var newState = new Option(entry, entry, true, true);
+                        
+                        $("#" + e.currentTarget.id + "").append(newState).trigger('change');
+                    }
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        })
         .on('change', function () {
             updateVariantPreview();
         });
@@ -199,6 +226,12 @@ function initializeVariants(total) {
         indexs.push(currentIndex);
 
         currentIndex = (currentIndex + 1);
+
+        if (indexs.length >= 3) {
+            $("#add-btn").hide();
+        } else {
+            $("#add-btn").show();
+        }
         
     }
 }
