@@ -168,12 +168,6 @@ class ProductService
             {
                 $productVariantPrices = $productVariantPrices->whereHas('productVariantOne', function ($query) use ($variant) {
                     $query->whereRaw('LOWER(`variant`) LIKE ?', '%' . $variant . '%');
-                })
-                ->orWhereHas('productVariantTwo', function ($query) use ($variant) {
-                    $query->whereRaw('LOWER(`variant`) LIKE ?', '%' . $variant . '%');
-                })
-                ->orWhereHas('productVariantThree', function ($query) use ($variant) {
-                    $query->whereRaw('LOWER(`variant`) LIKE ?', '%' . $variant . '%');
                 });
             }
         }
