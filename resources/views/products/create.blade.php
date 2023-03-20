@@ -95,7 +95,6 @@
 @endsection
 
 @push('page_js')
-
     <script type="text/javascript">
         let variants = {!! $variants !!};
         var fileUploadUrl = "{{ route('file-upload') }}";

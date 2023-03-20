@@ -22,7 +22,7 @@
     </td>
     <td>
         <div class="btn-group btn-group-sm">
-            <a href="{{ route('product.edit', $productVariantPrice->id) }}" class="btn btn-success">Edit</a>
+            <a href="{{ route('product.edit', $productVariantPrice->product->id) }}" class="btn btn-success">Edit</a>
         </div>
     </td>
 </tr>

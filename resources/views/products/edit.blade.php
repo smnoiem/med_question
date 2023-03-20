@@ -4,7 +4,9 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Edit Product</h1>
     </div>
-    <form action="">
+    <form action="{{route('product.update', $product->id)}}" method="POST">
+        @csrf
+        @method('PUT')
         <section>
             <div class="row">
                 <div class="col-md-6">
@@ -18,6 +20,7 @@
                                 <label for="product_name">Product Name</label>
                                 <input type="text"
                                        name="product_name"
+                                       value="{{ $product->title }}"
                                        id="product_name"
                                        required
                                        placeholder="Product Name"
@@ -27,6 +30,7 @@
                                 <label for="product_sku">Product SKU</label>
                                 <input type="text" name="product_sku"
                                        id="product_sku"
+                                       value="{{$product->sku}}"
                                        required
                                        placeholder="Product Name"
                                        class="form-control"></div>
@@ -36,7 +40,7 @@
                                           id="product_description"
                                           required
                                           rows="4"
-                                          class="form-control"></textarea>
+                                          class="form-control">{{$product->description}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -94,5 +98,9 @@
 @endsection
 
 @push('page_js')
+    <script type="text/javascript">
+        let variants = {!! $variants !!};
+        var fileUploadUrl = "{{ route('file-upload') }}";
+    </script>
     <script type="text/javascript" src="{{ asset('js/product.js') }}"></script>
 @endpush

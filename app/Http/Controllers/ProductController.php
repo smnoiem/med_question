@@ -73,7 +73,7 @@ class ProductController extends Controller
 
         $this->productService->addVariantPrices($productVariantPriceAllData, $product, $productVariantsMap);
 
-        return response()->redirectTo(route('product.index'));
+        return redirect(route('product.index', ['title' => $product->title]));
     }
 
 
@@ -97,7 +97,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $variants = Variant::all();
-        return view('products.edit', compact('variants'));
+        return view('products.edit', compact('product', 'variants'));
     }
 
     /**
@@ -109,7 +109,21 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $product->update([
+            'title' => $request->input('product_name'),
+            'sku' => $request->input('product_sku'),
+            'description' => $request->input('product_description'),
+        ]);
+
+        $mediaPaths = $request->input('product_medias', []);
+
+        $this->productService->storeMediaPaths($mediaPaths, $product);
+
+        $productVariantInputs = $request->input('product_variant', []);
+
+        $this->productService->updateVariants($productVariantInputs, $product);
+
+        return redirect(route('product.index', ['title' => $product->title]));
     }
 
     /**

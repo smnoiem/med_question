@@ -19,12 +19,25 @@ class ProductService
 
     public function storeMediaPaths($mediaPaths, Product $product)
     {
+        $this->removeUnusedMedias($mediaPaths, $product);
+
         foreach($mediaPaths as $mediaPath)
         {
             $productImage = new ProductImage;
             $productImage->product_id = $product->id;
             $productImage->file_path = $mediaPath;
             $productImage->save();
+        }
+    }
+
+    public function removeUnusedMedias($mediaPaths, Product $product)
+    {
+        foreach($product->images as $image)
+        {
+            if(!in_array($image->file_path, $mediaPaths)){
+                Storage::delete('product_photos'.$image->file_path);
+                $image->delete();
+            }
         }
     }
 
@@ -46,6 +59,34 @@ class ProductService
             }
         }
         return $productVariantsMap;
+    }
+
+    public function updateVariants($productVariantInputs, Product $product): array
+    {
+        $productVariantsMap = [];
+
+        foreach($productVariantInputs as $productVariantInput)
+        {
+            foreach($productVariantInput['value'] ?? [] as $value)
+            {
+                $productVariant = ProductVariant::updateOrCreate([
+                    'variant' => $value,
+                    'product_id' => $product->id,
+                    'variant_id' => $productVariantInput['option'],
+                ]);
+
+                $productVariantsMap[$value] = $productVariant->id;
+            }
+        }
+
+        // $this->removeUnusedVariants($productVariantsMap, $product);
+
+        return $productVariantsMap;
+    }
+
+    public function removeUnusedVariants($productVariantsMap, Product $product): void
+    {
+        return;
     }
 
     public function addVariantPrices($variantPriceAllData, Product $product, $productVariantsMap)
